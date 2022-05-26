@@ -339,7 +339,7 @@ export default class TabBar<T extends Route> extends React.Component<
             styles.indicatorContainer,
             scrollEnabled ? { transform: [{ translateX }] as any } : null,
             tabBarWidth > separatorsWidth
-              ? { width: tabBarWidth - separatorsWidth }
+              ? { width: tabBarWidth }
               : scrollEnabled
               ? { width: tabBarWidthPercent }
               : null,

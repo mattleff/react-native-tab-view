@@ -6,6 +6,7 @@ import {
   I18nManager,
   StyleProp,
   ViewStyle,
+  Platform,
 } from 'react-native';
 
 import { Route, SceneRendererProps, NavigationState } from './types';
@@ -64,10 +65,15 @@ export default class TabBarIndicator<T extends Route> extends React.Component<
   ) => {
     const inputRange = routes.map((_, i) => i);
 
+    const offsetAdjustmentFactor = Platform.OS === 'android' ? 3 : -1;
+
     // every index contains widths at all previous indices
     const outputRange = routes.reduce<number[]>((acc, _, i) => {
-      if (i === 0) return [0];
-      return [...acc, acc[i - 1] + getTabWidth(i - 1) + tabBarSpacing];
+      if (i === 0) return [offsetAdjustmentFactor];
+      return [
+        ...acc,
+        acc[i - 1] + Math.ceil(getTabWidth(i - 1)) + tabBarSpacing,
+      ];
     }, []);
 
     const translateX = position.interpolate({
@@ -104,7 +110,10 @@ export default class TabBarIndicator<T extends Route> extends React.Component<
 
     if (width === 'auto') {
       const inputRange = routes.map((_, i) => i);
-      const outputRange = inputRange.map(getTabWidth);
+      const widthAdjustmentFactor = Platform.OS === 'android' ? 0.87 : 1;
+      const outputRange = inputRange.map(
+        (i) => getTabWidth(i) * widthAdjustmentFactor
+      );
 
       transform.push(
         {
